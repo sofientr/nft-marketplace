@@ -1,0 +1,11 @@
+/home/ubuntu/MERN-boilerPlate/solana/rust/program/target/release/deps/libthiserror_impl-ef464f9070b3321e.so: /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/lib.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/ast.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/attr.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/expand.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/fmt.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/prop.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/valid.rs
+
+/home/ubuntu/MERN-boilerPlate/solana/rust/program/target/release/deps/thiserror_impl-ef464f9070b3321e.d: /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/lib.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/ast.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/attr.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/expand.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/fmt.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/prop.rs /home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/valid.rs
+
+/home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/lib.rs:
+/home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/ast.rs:
+/home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/attr.rs:
+/home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/expand.rs:
+/home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/fmt.rs:
+/home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/prop.rs:
+/home/ubuntu/.cargo/registry/src/github.com-1ecc6299db9ec823/thiserror-impl-1.0.26/src/valid.rs:

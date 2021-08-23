@@ -1,0 +1,37 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:program-rust": "cargo build-bpf --manifest-path=./rust/program/Cargo.toml --bpf-out-dir=./rust/dist",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/spl-token": "0.1.4",
+    "@solana/web3.js": "^1.10.0",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "borsh": "^0.5.0",
+    "buffer-layout": "^1.2.2",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "express-validator": "^6.10.0",
+    "flatted": "^3.2.2",
+    "formidable": "^1.2.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^5.11.18",
+    "morgan": "^1.10.0",
+    "mz": "^2.7.0",
+    "nodemon": "^2.0.7",
+    "shortid": "^2.2.16"
+  }
+}

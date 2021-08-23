@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/ubuntu/MERN-boilerPlate/solana/rust/program/target/rls/debug/build/typenum-94cf3725bec03280/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/home/ubuntu/MERN-boilerPlate/solana/rust/program/target/rls/debug/build/typenum-94cf3725bec03280/out/op.rs
