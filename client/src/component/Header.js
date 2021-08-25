@@ -8,11 +8,12 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
+  NavLink, NavbarText
 } from "reactstrap";
 import { withRouter } from "react-router-dom";
+import ConnectWallet from "./ConnectWallet";
 
-const Header = ({ history }) => {
+const Header = ({ history, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
@@ -48,35 +49,60 @@ const Header = ({ history }) => {
             {isAuth() && isAuth().role === 0 && (
               <NavItem>
                 <Link to="/user">
-                  <NavLink style={{ cursor: "pointer" }}>{`${
-                    isAuth().name
-                  }'s Dashboard`}</NavLink>
+                  <NavLink style={{ cursor: "pointer" }}>mint NFT on Solana</NavLink>
                 </Link>
               </NavItem>
             )}
+
+            {isAuth() && isAuth().role === 0 && (
+              <NavItem>
+                <Link to="/polygon">
+                  <NavLink style={{ cursor: "pointer" }}>mint NFT on Polygon </NavLink>
+                </Link>
+              </NavItem>
+            )}
+            {isAuth() && isAuth().role === 0 && (
+              <NavItem>
+                <Link to="/externalMint">
+                  <NavLink style={{ cursor: "pointer" }}>external mint on Polygon </NavLink>
+                </Link>
+              </NavItem>
+            )}
+
 
             {isAuth() && isAuth().role === 1 && (
               <NavItem>
                 <Link to="/admin">
-                  <NavLink style={{ cursor: "pointer" }}>{`${
-                    isAuth().name
-                  }'s Dashboard`}</NavLink>
+                  <NavLink style={{ cursor: "pointer" }}>{`${isAuth().name
+                    }'s Dashboard`}</NavLink>
                 </Link>
               </NavItem>
             )}
 
-            {isAuth() && (
-              <NavItem>
-                <NavLink
-                  style={{ cursor: "pointer" }}
-                  onClick={() => signout(() => history.push("/signin"))}
-                >
-                  SignOut
-                </NavLink>
-              </NavItem>
-            )}
+
           </Nav>
+
         </Collapse>
+        <NavbarText>          {isAuth() && isAuth().role === 0 && <ConnectWallet
+          signerAddress={signerAddress}
+          contract_1155={contract_1155}
+          contract_721={contract_721}
+          setContract_1155={setContract_1155}
+          setContract_721={setContract_721}
+          setSignerAddress={setSignerAddress}
+          setNetworkId={setNetworkId}
+        />}</NavbarText>
+        {isAuth() && (
+          <NavItem>
+            <NavLink
+              style={{ cursor: "pointer" }}
+              onClick={() => signout(() => history.push("/signin"))}
+            >
+              SignOut
+            </NavLink>
+          </NavItem>
+        )}
+
       </Navbar>
     </div>
   );
