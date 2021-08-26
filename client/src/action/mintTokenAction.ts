@@ -13,7 +13,7 @@ const API = axios.create();
 
 // products
 export const mintNFT = (data:any)=> axios.post(`/api/mint`,data);
-export const mintMyNFT = (data:any)=> axios.post(`/api/mintMyNFT`,data);
+export const createMint = (data:any)=> axios.post(`/api/createMint`,data);
 export const createWallet = () => axios.get(`/api/createWallet`);
 // export const fetchProductById = (id)=> axios.get(`/products/${id}`);
 // export const createProduct = (newProduct)=> axios.post(`/products`, newProduct);

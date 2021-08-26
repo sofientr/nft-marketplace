@@ -66,86 +66,164 @@ const Solana = () => {
       // 'signature': signature
     };
     console.log('data', data);
-/*
+
+
 
     const mintAccount = web3.Keypair.generate();
 
     const balanceNeeded = await splToken.Token.getMinBalanceRentForExemptMint(
       connection,
     );
+
+    let transaction = new web3.Transaction();
+let myProgramId = splToken.TOKEN_PROGRAM_ID;
+
+    transaction.add(
+      web3.SystemProgram.createAccount({
+        fromPubkey: window.solana.publicKey,
+        newAccountPubkey: mintAccount.publicKey,
+        lamports: balanceNeeded,
+        space: splToken.MintLayout.span,
+        programId: myProgramId,
+      }),
+    );
   
-    // const transaction = new web3.Transaction();
-    const transaction2 = new web3.Transaction();
-
-  // let myToken = new splToken.Token(
-  //   connection ,
-  //   mintAccount.publicKey,
-  //   myProgramId,
-  //   marketplaceWallet
-  // )
-
-// console.log('splToken.MintLayout',splToken.MintLayout);
-
-  // transaction2.add(
-  //   web3.SystemProgram.createAccount({
-  //     fromPubkey: window.solana.publicKey,
-  //     newAccountPubkey: mintAccount.publicKey,
-  //     lamports: balanceNeeded,
-  //     space: splToken.MintLayout.span,
-  //     programId: splToken.TOKEN_PROGRAM_ID,
-  //   }),
-  // );
-    transaction2.add(
+    transaction.add(
       splToken.Token.createInitMintInstruction(
-        splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
+        myProgramId,
         mintAccount.publicKey,
         0,
         window.solana.publicKey,
-        null,
+        window.solana.publicKey,
       ),
     );
 
 
-let to = new web3.PublicKey('5R7BnfH2kuvxU4WRhog4vBmCABXQB9Y1hkHu8hqh3MyF');
-  // transaction.add(
-  //   web3.SystemProgram.transfer({
-  //   fromPubkey: window.solana.publicKey,
-  //   toPubkey: to,
-  //   lamports: 100
-  // })
-  // );
 
-    transaction2.feePayer = window.solana.publicKey;
+    transaction.feePayer = window.solana.publicKey;
+    transaction.recentBlockhash = (
+      await connection.getRecentBlockhash()
+    ).blockhash;
+
+    /*
+    let tokenAssocietedAccount : PublicKey = await splToken.Token.getAssociatedTokenAddress(
+      splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
+      splToken.TOKEN_PROGRAM_ID,
+      mintAccount.publicKey,
+      window.solana.publicKey
+    );
+
+    console.log('tokenAssocietedAccount',tokenAssocietedAccount.toBase58());
+    
+
+
+    transaction.add(
+      splToken.Token.createMintToInstruction(
+
+        myProgramId,
+        mintAccount.publicKey,
+        tokenAssocietedAccount,
+        window.solana.publicKey,
+        [],
+        1,
+      )
+      )
+
+    transaction.add(
+      splToken.Token.createMintToInstruction(
+        myProgramId,
+        mintAccount.publicKey,
+        tokenAssocietedAccount,
+        window.solana.publicKey,
+        [],
+        1,
+      )
+      );
+      */
+
+    transaction.sign(mintAccount);
+      console.log('transaction', transaction);
+      const signedTransaction = await window.solana.signTransaction(transaction);
+      const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+      console.log('signedTransaction', signedTransaction);
+      console.log('signature', signature);
+
+      let transaction2 = new web3.Transaction();
+
+      let tokenAssocietedAccount : PublicKey = await splToken.Token.getAssociatedTokenAddress(
+        splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
+        splToken.TOKEN_PROGRAM_ID,
+        mintAccount.publicKey,
+        window.solana.publicKey
+      );
+
+      transaction2.add(
+        splToken.Token.createAssociatedTokenAccountInstruction(
+        splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
+        splToken.TOKEN_PROGRAM_ID,
+        mintAccount.publicKey,
+        tokenAssocietedAccount,
+        window.solana.publicKey,
+        window.solana.publicKey
+
+      ));
+
+    // const tokenAssocietedAccount = web3.Keypair.generate();
+
+  
+      console.log('tokenAssocietedAccount',tokenAssocietedAccount.toBase58());
+
+      // transaction2.add(
+      //   splToken.Token.createMintToInstruction(
+  
+      //     myProgramId,
+      //     mintAccount.publicKey,
+      //     tokenAssocietedAccount,
+      //     window.solana.publicKey,
+      //     [],
+      //     1,
+      //   )
+      //   )
+  
+      transaction2.add(
+        splToken.Token.createMintToInstruction(
+          myProgramId,
+          mintAccount.publicKey,
+          tokenAssocietedAccount,
+          window.solana.publicKey,
+          [],
+          1,
+        )
+        );
+
+        transaction2.feePayer = window.solana.publicKey;
     transaction2.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
 
+        const signedTransaction2 = await window.solana.signTransaction(transaction2);
+      const signature2 = await connection.sendRawTransaction(signedTransaction2.serialize());
+      console.log('signedTransaction', signedTransaction2);
+      console.log('signature', signature2);
+
+      setMintPK(mintAccount.publicKey.toBase58());
 
 
-    transaction2.sign(mintAccount);
+/*
 
-    console.log('transaction', transaction2);
-
-    
-    const signedTransaction  = await window.solana.signTransaction(transaction2);
-    
-      const signature = await connection.sendRawTransaction(signedTransaction.serialize());
-      console.log('signedTransactions', signedTransaction);
-      console.log('signature', signature);
-    
-
-*/
-    api.mintMyNFT(data).then(async res => {
+    api.createMint(data).then(async res => {
       // console.log('token', parse(res.data.token));
       console.log('res', res.data.transaction);
-      let transaction = res.data.transaction as Transaction;
+
+      let transaction = new Transaction(); 
+      transaction.add((res.data.transaction1 as Transaction).instructions[1]);
     console.log('transaction', transaction);
-    });
+   
 // let transaction = new web3.Transaction();
 // tran.instructions.forEach(ins =>{
 //   transaction.add(ins);
 // });
-/*
+
 
     // transaction.add(res.data.transaction.instructions[0])
     transaction.feePayer = window.solana.publicKey;
@@ -155,10 +233,10 @@ let to = new web3.PublicKey('5R7BnfH2kuvxU4WRhog4vBmCABXQB9Y1hkHu8hqh3MyF');
 
       console.log('transaction', transaction);
 
-      // const signedTransaction = await window.solana.signTransaction(transaction);
-      // const signature = await connection.sendRawTransaction(signedTransaction.serialize());
-      // console.log('signedTransaction', signedTransaction);
-      // console.log('signature', signature);
+      const signedTransaction = await window.solana.signTransaction(transaction);
+      const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+      console.log('signedTransaction', signedTransaction);
+      console.log('signature', signature);
 
       // setMintPK(JSON.stringify(signature));
       setMintPK(res.data.token);
