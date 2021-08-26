@@ -7,9 +7,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 
 //bring routes
-const authRoutes = require("./routes/authRoutes");
-const blogRoutes = require("./routes/blog");
-const userRouters = require("./routes/userRoutes");
+
 const solanaRouters = require("./routes/solanaRoutes");
 
 //app
@@ -38,9 +36,7 @@ if (process.env.NODE_ENV == "development") {
 }
 
 //routes middleware
-app.use("/api", blogRoutes);
-app.use("/api", authRoutes);
-app.use("/api", userRouters);
+
 app.use("/api", solanaRouters);
 
 //port
