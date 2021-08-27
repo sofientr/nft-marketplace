@@ -32,6 +32,8 @@ function App() {
           <Route path="/signin" component={Signin} exact />
           <Route path="/admin" component={HomeAdmin} exact />
           <Route path="/solana" component={Solana} exact />
+          <Route path="/form" component={Form} exact />
+          <Route path="/contract" component={Contract} exact />
           {/* <Route path="/solana"  exact  >
             <Solana
             isMobile={isMobile}

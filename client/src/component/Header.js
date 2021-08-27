@@ -68,6 +68,20 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
                 </Link>
               </NavItem>
             )}
+             {isAuth() && isAuth().role === 0 && (
+              <NavItem>
+                <Link to="/form">
+                  <NavLink style={{ cursor: "pointer" }}>mint NFT on Tron </NavLink>
+                </Link>
+              </NavItem>
+            )}
+            {isAuth() && isAuth().role === 0 && (
+              <NavItem>
+                <Link to="/contract">
+                  <NavLink style={{ cursor: "pointer" }}>external mint on Tron </NavLink>
+                </Link>
+              </NavItem>
+            )}
 
 
             {isAuth() && isAuth().role === 1 && (
