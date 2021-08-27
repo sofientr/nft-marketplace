@@ -48,7 +48,7 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
 
             {isAuth() && isAuth().role === 0 && (
               <NavItem>
-                <Link to="/user">
+                <Link to="/solana">
                   <NavLink style={{ cursor: "pointer" }}>mint NFT on Solana</NavLink>
                 </Link>
               </NavItem>

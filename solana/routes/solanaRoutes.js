@@ -5,10 +5,9 @@ const {
   
   createWallet,
   connectWallet,
-  mint,
   deploySmartContract,
   createMint,
-  initMint
+  createCustomMint
 
 } = require("../controllers/solanaControllers");
 
@@ -19,9 +18,8 @@ const { runValidation } = require("../validators");
 //pass on controllers
 route.post("/createWallet", runValidation, createWallet);
 route.post("/connectWallet", runValidation, connectWallet);
-route.post("/mint", runValidation, mint);
 route.post("/createMint", runValidation, createMint);
-route.post("/initMint", runValidation, initMint);
+route.post("/mintNFTByMyContract", runValidation, createCustomMint);
 route.post("/deploy", runValidation, deploySmartContract);
 
 

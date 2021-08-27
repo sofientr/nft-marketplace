@@ -31,7 +31,15 @@ function App() {
           <Route path="/signup" component={SignUP} exact />
           <Route path="/signin" component={Signin} exact />
           <Route path="/admin" component={HomeAdmin} exact />
-          <Route path="/user" component={Solana} exact />
+          <Route path="/solana" component={Solana} exact />
+          {/* <Route path="/solana"  exact  >
+            <Solana
+            isMobile={isMobile}
+            contract_1155={contract_1155}
+            contract_721={contract_721}
+            networkId={networkId} 
+            />
+          </Route> */}
           <Route path="/polygon" exact   >
             <Mint         
           isMobile={isMobile}
