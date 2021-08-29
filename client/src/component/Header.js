@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { isAuth, signout } from "../action/authAcation";
 import {
   Collapse,
@@ -12,9 +12,11 @@ import {
 } from "reactstrap";
 import { withRouter } from "react-router-dom";
 import ConnectWallet from "./ConnectWallet";
+import { Button } from "@material-ui/core";
 
-const Header = ({ history, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
+const Header = ({ history, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId,setSolanaWalletPK }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const toggle = () => setIsOpen(!isOpen);
 
   return (
@@ -46,7 +48,7 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
               </React.Fragment>
             )}
 
-            {isAuth() && isAuth().role === 0 && (
+            {isAuth() && isAuth().role === 0 && window.solana?.isConnected &&(
               <NavItem>
                 <Link to="/solana">
                   <NavLink style={{ cursor: "pointer" }}>mint NFT on Solana</NavLink>
@@ -97,7 +99,9 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
           </Nav>
 
         </Collapse>
-        <NavbarText>          {isAuth() && isAuth().role === 0 && <ConnectWallet
+        <NavbarText>          
+          {isAuth() && isAuth().role === 0 && 
+          <ConnectWallet
           signerAddress={signerAddress}
           contract_1155={contract_1155}
           contract_721={contract_721}
@@ -105,7 +109,36 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
           setContract_721={setContract_721}
           setSignerAddress={setSignerAddress}
           setNetworkId={setNetworkId}
-        />}</NavbarText>
+        />}
+        </NavbarText>
+
+        <NavbarText> 
+          <Button variant="contained" color="primary"
+            onClick={async ()=>{
+              if (window.solana && window.solana.isPhantom ) {
+                
+                if(!window.solana.isConnected){
+
+                  await window.solana?.connect();
+                  setSolanaWalletPK(window.solana?.publicKey?.toString())
+                }else {
+                  await window.solana.disconnect();
+                  setSolanaWalletPK('');
+                  history.push('/') 
+
+                }
+                   
+                return window
+              }
+              let confirmed = window.confirm("You dont have a wallet! \n Do you want to install Phantom wallet?");
+              if (confirmed) { window.open("https://phantom.app/", "_blank") }
+              else { 
+                history.push('/') }
+            }}
+          >{window.solana?.isConnected? 'Disconnect Phantom':'Connect Phantom'}</Button>         
+        </NavbarText>
+
+
         {isAuth() && (
           <NavItem>
             <NavLink

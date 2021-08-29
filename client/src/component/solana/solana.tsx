@@ -1,29 +1,30 @@
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { clusterApiUrl, Connection, Transaction, PublicKey } from "@solana/web3.js";
 import * as web3 from "@solana/web3.js";
-import React, { EventHandler, useEffect, useLayoutEffect, useState } from "react";
 import * as api from "../../action/mintTokenAction"
-import { pickBy } from "lodash";
 import * as splToken from "@solana/spl-token";
-import { create } from 'ipfs-http-client'
-// import SolanaForm from "./solanaForm";
-
-import { parse, stringify, toJSON, fromJSON } from 'flatted';
-import Form from "../Form";
-
-
+import { create } from 'ipfs-http-client';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import SweetAlert from 'react-bootstrap-sweetalert';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import CloudUploadIcon from '@material-ui/icons/CloudUploadSharp';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { BottomNavigation, BottomNavigationAction, FormControl, FormLabel } from "@material-ui/core";
+
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 
 // import Wallet from "../solanaWallet/wallet"
 declare const window: any;
@@ -53,26 +54,71 @@ const useStyles = makeStyles((theme) => ({
   input: {
     display: 'none',
   },
+  root: {
+    width: '100%',
+  },
 }));
 
+// formik
+const validationSchema = yup.object({
+  name: yup
+    .string()
+    .default('Enter your name')
+    .required('Name is required'),
+  description: yup
+    .string()
+    .default('Enter a description')
+    .required('Description is required'),
+  asset: yup
+    .mixed()
+    .required('File is required'),
+  mintType: yup
+    .string()
+    .default('Marketplace Contract')
+    .required()
+});
 
 
-const Solana = () => {
+// export const connectSolanaWallet = async () => {
+// if (window.solana){
+
+//   if (!window.solana?.isConnected) {
+//     await window.solana?.connect();
+//     // setCnxnStatus('Disconnect');
+//     console.log('connected');
+//     let confirmed = window.confirm("You dont have a wallet! \n Do you want to install Phantom wallet?");
+//     if (confirmed) { window.open("https://phantom.app/", "_blank") }
+//     else { history.push('/') }
+    
+    
+//   }
+//   if (window.solana?.isConnected) {
+//     // else {
+//       await window.solana?.disconnect();
+//       // setCnxnStatus('Connect');
+//       // setPubkey('deleted');
+      
+      
+//     }
+//   }
+// } 
+
+const Solana = (solanaWalletPK: string) => {
 
   const classes = useStyles();
+  let history = useHistory();
 
-
-  let [cnxnStatus, setCnxnStatus] = useState(window.solana.isConnected ? "Disconnect" : "Connect");
+  let [cnxnStatus, setCnxnStatus] = useState(window.solana?.isConnected ? "Disconnect" : "Connect");
   let [solAction, setSolAction] = useState("Mint");
   let [smartContractAddress, setSmartContractAddress] = useState('');
   let [imageFile, setImageFile] = useState();
-  let [pubkey, setPubkey] = useState('no pk');
+  let [pubkey, setPubkey] = useState(solanaWalletPK);
   let [mintPK, setMintPK] = useState('');
   let [myMintPK, setMyMintPK] = useState('');
 
   // const getProvider = () => {
   //   if ("solana" in window) {
-  //     const provider = window.solana;
+  //     const provider = window.solana?;
   //     if (provider.isPhantom) {
   //       return provider;
   //     }
@@ -80,18 +126,41 @@ const Solana = () => {
   //   window.open("https://phantom.app/", "_blank");
   // };
 
-  const connectAction = async () => {
-    console.log(window.solana.isConnected);
+  const formik = useFormik({
+    initialValues: {
+      name: 'My NFT',
+      description: 'Description',
+      asset: null,
+      mintType: ''
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      let mintType = values.mintType;
+      if (mintType==="My contract")
+      // createNFTByMyContract()
+          createNFT()
 
-    if (!window.solana.isConnected) {
-      await window.solana.connect();
+      else createNFT();
+
+    },
+  });
+
+
+  const connectAction = async () => {
+    console.log(window.solana?.isConnected);
+
+    // connectWallet(setCnxnStatus,setPubkey);
+
+    if (!window.solana?.isConnected) {
+      await window.solana?.connect();
       setCnxnStatus('Disconnect');
       console.log('connected');
 
 
     }
+    // if (window.solana?.isConnected) {
     else {
-      await window.solana.disconnect();
+      await window.solana?.disconnect();
       setCnxnStatus('Connect');
       setPubkey('deleted');
 
@@ -115,7 +184,7 @@ const Solana = () => {
 
 
     let data = {
-      'walletPK': window.solana.publicKey?.toString(),
+      'walletPK': window.solana?.publicKey?.toString(),
       // 'transaction' : signedTransaction ,
       // 'signature': signature
     };
@@ -136,7 +205,7 @@ const Solana = () => {
 
     transaction.add(
       web3.SystemProgram.createAccount({
-        fromPubkey: window.solana.publicKey,
+        fromPubkey: window.solana?.publicKey,
         newAccountPubkey: mintAccount.publicKey,
         lamports: balanceNeeded,
         space: splToken.MintLayout.span,
@@ -149,23 +218,23 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         0,
-        window.solana.publicKey,
-        window.solana.publicKey,
+        window.solana?.publicKey,
+        window.solana?.publicKey,
       ),
     );
 
 
 
-    transaction.feePayer = window.solana.publicKey;
+    transaction.feePayer = window.solana?.publicKey;
     transaction.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
 
-    
+
 
     transaction.sign(mintAccount);
     console.log('transaction', transaction);
-    const signedTransaction = await window.solana.signTransaction(transaction);
+    const signedTransaction = await window.solana?.signTransaction(transaction);
     const signature = await connection.sendRawTransaction(signedTransaction.serialize());
     console.log('signedTransaction', signedTransaction);
     console.log('signature', signature);
@@ -176,7 +245,7 @@ const Solana = () => {
       splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
       splToken.TOKEN_PROGRAM_ID,
       mintAccount.publicKey,
-      window.solana.publicKey
+      window.solana?.publicKey
     );
 
     transaction2.add(
@@ -185,8 +254,8 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
-        window.solana.publicKey
+        window.solana?.publicKey,
+        window.solana?.publicKey
 
       ));
 
@@ -194,25 +263,25 @@ const Solana = () => {
 
     console.log('tokenAssocietedAccount', tokenAssocietedAccount.toBase58());
 
-    
+
 
     transaction2.add(
       splToken.Token.createMintToInstruction(
         myProgramId,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
+        window.solana?.publicKey,
         [],
         1,
       )
     );
 
-    transaction2.feePayer = window.solana.publicKey;
+    transaction2.feePayer = window.solana?.publicKey;
     transaction2.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
 
-    const signedTransaction2 = await window.solana.signTransaction(transaction2);
+    const signedTransaction2 = await window.solana?.signTransaction(transaction2);
     const signature2 = await connection.sendRawTransaction(signedTransaction2.serialize());
     console.log('signedTransaction', signedTransaction2);
     console.log('signature', signature2);
@@ -237,14 +306,14 @@ const Solana = () => {
     
     
         // transaction.add(res.data.transaction.instructions[0])
-        transaction.feePayer = window.solana.publicKey;
+        transaction.feePayer = window.solana?.publicKey;
         transaction.recentBlockhash = (
           await connection.getRecentBlockhash()
         ).blockhash;
     
           console.log('transaction', transaction);
     
-          const signedTransaction = await window.solana.signTransaction(transaction);
+          const signedTransaction = await window.solana?.signTransaction(transaction);
           const signature = await connection.sendRawTransaction(signedTransaction.serialize());
           console.log('signedTransaction', signedTransaction);
           console.log('signature', signature);
@@ -266,7 +335,7 @@ const Solana = () => {
 
 
     let data = {
-      'walletPK': window.solana.publicKey?.toString(),
+      'walletPK': window.solana?.publicKey?.toString(),
       // 'transaction' : signedTransaction ,
       // 'signature': signature
     };
@@ -285,7 +354,7 @@ const Solana = () => {
 
     transaction.add(
       web3.SystemProgram.createAccount({
-        fromPubkey: window.solana.publicKey,
+        fromPubkey: window.solana?.publicKey,
         newAccountPubkey: mintAccount.publicKey,
         lamports: balanceNeeded,
         space: splToken.MintLayout.span,
@@ -298,23 +367,23 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         0,
-        window.solana.publicKey,
-        window.solana.publicKey,
+        window.solana?.publicKey,
+        window.solana?.publicKey,
       ),
     );
 
 
 
-    transaction.feePayer = window.solana.publicKey;
+    transaction.feePayer = window.solana?.publicKey;
     transaction.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
 
-    
+
 
     transaction.sign(mintAccount);
     console.log('transaction', transaction);
-    const signedTransaction = await window.solana.signTransaction(transaction);
+    const signedTransaction = await window.solana?.signTransaction(transaction);
     const signature = await connection.sendRawTransaction(signedTransaction.serialize());
     console.log('signedTransaction', signedTransaction);
     console.log('signature', signature);
@@ -325,7 +394,7 @@ const Solana = () => {
       splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
       splToken.TOKEN_PROGRAM_ID,
       mintAccount.publicKey,
-      window.solana.publicKey
+      window.solana?.publicKey
     );
 
     transaction2.add(
@@ -334,8 +403,8 @@ const Solana = () => {
         splToken.TOKEN_PROGRAM_ID,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
-        window.solana.publicKey
+        window.solana?.publicKey,
+        window.solana?.publicKey
 
       ));
 
@@ -343,25 +412,25 @@ const Solana = () => {
 
     console.log('tokenAssocietedAccount', tokenAssocietedAccount.toBase58());
 
-    
+
 
     transaction2.add(
       splToken.Token.createMintToInstruction(
         myProgramId,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
+        window.solana?.publicKey,
         [],
         1,
       )
     );
 
-    transaction2.feePayer = window.solana.publicKey;
+    transaction2.feePayer = window.solana?.publicKey;
     transaction2.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
 
-    const signedTransaction2 = await window.solana.signTransaction(transaction2);
+    const signedTransaction2 = await window.solana?.signTransaction(transaction2);
     const signature2 = await connection.sendRawTransaction(signedTransaction2.serialize());
     console.log('signedTransaction', signedTransaction2);
     console.log('signature', signature2);
@@ -386,14 +455,14 @@ const Solana = () => {
     
     
         // transaction.add(res.data.transaction.instructions[0])
-        transaction.feePayer = window.solana.publicKey;
+        transaction.feePayer = window.solana?.publicKey;
         transaction.recentBlockhash = (
           await connection.getRecentBlockhash()
         ).blockhash;
     
           console.log('transaction', transaction);
     
-          const signedTransaction = await window.solana.signTransaction(transaction);
+          const signedTransaction = await window.solana?.signTransaction(transaction);
           const signature = await connection.sendRawTransaction(signedTransaction.serialize());
           console.log('signedTransaction', signedTransaction);
           console.log('signature', signature);
@@ -404,21 +473,21 @@ const Solana = () => {
         */
 
   }
- 
 
-const deployMyContract = () =>{
-  api.deployContract({}).then(res =>{
-    setSmartContractAddress(res.data.programId);
-  })
-}
+
+  const deployMyContract = () => {
+    api.deployContract({}).then(res => {
+      setSmartContractAddress(res.data.programId);
+    })
+  }
 
   useEffect(() => {
     setTimeout(() => {
-      setPubkey(window.solana.publicKey?.toString());
-      console.log(window.solana.publicKey?.toString());
+      setPubkey(window.solana?.publicKey?.toString());
+      console.log(window.solana?.publicKey?.toString());
 
-    }, 10000)
-    setPubkey(window.solana.publicKey?.toString());
+    }, 5000)
+    setPubkey(window.solana?.publicKey?.toString());
 
 
     // console.log('setPubkey',pubkey);
@@ -426,19 +495,31 @@ const deployMyContract = () =>{
 
   }, [cnxnStatus])
 
-let changeSolAction = ()=>{
-  solAction==="Mint" ? setSolAction('Deploy'):setSolAction('Mint')
-  
-}
+  useEffect(() => {
+    if ("solana" in window) {
+      const provider = window.solana;
+      if (provider.isPhantom) {
+        return provider;
+      }
+    }
+    let confirmed = window.confirm("You dont have a wallet! \n Do you want to install Phantom wallet?");
+    if (confirmed) { window.open("https://phantom.app/", "_blank") }
+    else { history.push('/') }
+  }, [])
+
+  let changeSolAction = () => {
+    solAction === "Mint" ? setSolAction('Deploy') : setSolAction('Mint')
+
+  }
 
   const [fileUrl, updateFileUrl] = useState(``)
   async function onChange(e: React.ChangeEvent<any>) {
     const file = e?.target.files[0];
     // const file = imageFile;
     try {
+      updateFileUrl(file)
       const added = await client.add(file)
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
-      updateFileUrl(url)
       console.log('fileURL', fileUrl);
 
     } catch (error) {
@@ -448,173 +529,202 @@ let changeSolAction = ()=>{
 
   // useEffect(() => {
 
-  //   setPubkey(window.solana.publicKey?.toString())
+  //   setPubkey(window.solana?.publicKey?.toString())
 
-  // }, [window.solana.isConnected]);
+  // }, [window.solana?.isConnected]);
 
 
   return (
     <div>
       <h2>Solana Panel</h2>
-      <h3>walletPK : {pubkey}</h3>
-     
-      <div>
-        <button onClick={() => { connectAction() }} >
-
-          {cnxnStatus}
-        </button>
-      </div>
-      
-
-
-      {window.solana.publicKey && (
+      {/* {window.solana &&
         <div>
-<div>
-        <button onClick={() => { changeSolAction() }} >
-          {solAction === "Mint"? 'Deploy' : 'Mint'}
-        </button>
-        
-      </div>
-         {solAction==='Mint' && (
+          <Button variant="contained" color="primary" onClick={() => { connectAction() }}>
+            {cnxnStatus}
 
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            NFT Details
-          </Typography>
-          <form className={classes.form} noValidate >
-            <Grid container spacing={2}>
-
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="name"
-                  label="NFT Name"
-                  name="name"
-                  autoComplete="name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="description"
-                  label="Description"
-                  type="text"
-                  id="description"
-                  autoComplete="description"
-                />
-              </Grid>
-
-
-              <input
-                accept="image/*"
-                className={classes.input}
-                id="contained-button-file"
-                multiple
-                type="file"
-                onChange={onChange}
-
-              />
-              <label htmlFor="contained-button-file">
-                <Button variant="contained" color="primary" component="span">
-                  Upload
-                </Button>
-              </label>
-              <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
-              {
-                fileUrl && (
-                  <div>
-                    <img src={fileUrl} width="100%" />
-                  </div>
-                )
-              }
-
-
-
-              <Grid item xs={12}>
-
-                <Button
-                  // type="submit"
-                  name="createNFT"
-
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                onClick={()=>createNFT()}
-
-                >
-                  Create NFT
-                </Button>
-              </Grid>
-              <Grid item xs={12} >
-
-                <Button
-                  // type="submit"
-                  name="createNFTByMyContract"
-
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                onClick={()=>createNFT()}
-                // onClick={()=>createNFTByMyContract()}
-                >
-                  Create NFT With My Contract
-                </Button>
-              </Grid>
-            </Grid>
-
-
-
-
-
-          </form>
+          </Button>
         </div>
-          
-        {mintPK &&(
-  
-          <h5>NFT Address: {mintPK}</h5>
-        )}
-      </Container>
-)}
-{solAction==='Deploy' && (
-  <Container>
-    <Grid container spacing={2}>
-    <Grid item xs={12}>
-    <Button
-                  // type="submit"
-                  name="deployMyContract"
+      } */}
 
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                onClick={()=>deployMyContract()}
-                >
-                  Create My Own SmartContract
-                </Button>
-    </Grid>
-    </Grid>
-    {smartContractAddress &&(
-  
-  <h5>Deployed Smart Contract Address: {smartContractAddress}</h5>
-)}
-  </Container>
-)}
 
-      </div>)}
+      {window.solana?.publicKey && (
+        <div>
+          <div>
+
+            <BottomNavigation
+              // value={solAction}
+              onChange={(event, newValue) => {
+                setSolAction(newValue);
+              }}
+              showLabels
+              className={classes.root}
+            >
+              <BottomNavigationAction label="Mint" value="Mint" icon={<LocationOnIcon />} color="secondary" />
+              <BottomNavigationAction label="Deploy" value="Deploy" icon={<CloudUploadIcon />} color="action" />
+            </BottomNavigation>
+          </div>
+          {solAction === 'Mint' && (
+
+            <Container component="main" maxWidth="xs">
+              <CssBaseline />
+              <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                  NFT Details
+                </Typography>
+
+
+                <form className={classes.form} onSubmit={formik.handleSubmit} >
+                  <Grid container spacing={2}>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+
+
+                        id="name"
+                        name="name"
+                        label="name"
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                        error={formik.touched.name && Boolean(formik.errors.name)}
+                        helperText={formik.touched.name && formik.errors.name}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+
+                        id="description"
+                        name="description"
+                        label="description"
+                        value={formik.values.description}
+                        onChange={formik.handleChange}
+                        error={formik.touched.description && Boolean(formik.errors.description)}
+                        helperText={formik.touched.description && formik.errors.description}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+
+                      <input
+                        accept="image/*"
+                        className={classes.input}
+                        id="asset"
+                        name="asset"
+                        type="file"
+                        onChange={(event: React.ChangeEvent<any>) => {
+                          formik.setFieldValue("asset", event.currentTarget.files[0]);
+                          onChange(event)
+                        }}
+                      // onChange={onChange}
+
+
+                      />
+
+                      <label htmlFor="asset">
+                        <Button variant="contained" color="primary" component="span">
+                          Upload
+                        </Button>
+                      </label>
+                      <input accept="image/*" className={classes.input} id="asset" type="file" />
+                      {
+                        fileUrl && (
+                          <div>
+                            <img src={URL.createObjectURL(formik.values.asset)} width="100%" />
+                          </div>
+                        )
+                      }
+                    </Grid>
+                    <Grid item xs={12}>
+
+
+                      <FormControl component="fieldset">
+                        <FormLabel component="legend">Choose a Contract</FormLabel>
+                        <RadioGroup
+                          
+                          name="mintType"
+                          value={formik.values.mintType}
+                          onChange={(event: React.ChangeEvent<any>) => {
+                            formik.setFieldValue("mintType", (event.target as HTMLInputElement).value)
+                          }}
+                        >
+                          <FormControlLabel value="My Contract" control={<Radio />} label="My Contract" />
+                          <FormControlLabel value="Marketplace's Contract" control={<Radio />} label="Marketplace's Contract" />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12}>
+
+                      <Button
+                        // type="submit"
+                        name="MintNFT"
+
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        className={classes.submit}
+
+                      >
+                        Mint NFT
+                      </Button>
+                    </Grid>
+
+                  </Grid>
+
+
+
+
+
+                </form>
+              </div>
+
+              {mintPK && (
+                <SweetAlert success title="NFT Created!" onConfirm={() => { setMintPK('') }} >
+                  NFT Address: {mintPK}
+                </SweetAlert>
+                // <h5>NFT Address: {mintPK}</h5>
+              )}
+            </Container>
+          )}
+          {solAction === 'Deploy' && (
+            <Container>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Button
+                    // type="submit"
+                    name="deployMyContract"
+
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    onClick={() => deployMyContract()}
+                  >
+                    Create My Own SmartContract
+                  </Button>
+                </Grid>
+              </Grid>
+              {smartContractAddress &&
+                <SweetAlert success title="Smart Contract Deployed at :" onConfirm={() => { setSmartContractAddress('') }} >
+                   {smartContractAddress}
+                </SweetAlert>
+                // <h5>NFT Address: {mintPK}</h5>
+              }
+            </Container>
+          )}
+
+        </div>)}
 
     </div>
   )
 };
-export default Solana
+export default Solana;
+// export connectWallet ;
 

@@ -42,7 +42,7 @@ if (process.env.NODE_ENV == "development") {
 app.use("/api", solanaRouters);
 
 //port
-const port = process.env.PORT || 8001;
+const port = process.env.PORT || 8005;
 app.listen(port, () => {
   console.log(`Your server is running on port ${port}`);
 });
