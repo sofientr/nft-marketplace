@@ -43,7 +43,7 @@ app.use("/api", authRoutes);
 app.use("/api", userRouters);
 
 //port
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8001;
 app.listen(port, () => {
   console.log(`Your server is running on port ${port}`);
 });

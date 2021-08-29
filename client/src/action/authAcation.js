@@ -20,7 +20,7 @@ export const signup = (user) => {
 };
 
 export const signin = (user) => {
-  return fetch(`http://localhost:8000/api/signin`, {
+  return fetch(`http://localhost:8001/api/signin`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -41,7 +41,7 @@ export const signout = (next) => {
   removeLocalStorage("user");
   next();
 
-  return fetch(`http://localhost:8000/api/signout`, {
+  return fetch(`http://localhost:8001/api/signout`, {
     method: "GET",
   })
     .then((response) => {
