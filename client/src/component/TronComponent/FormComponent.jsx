@@ -99,7 +99,7 @@ const FormComponent = (
       let contract = await tronWeb.contract().at("TX2HV8qf2B2RByXbnie24iTW5w5T2matFp")
       console.log("kkk",contract)
       try{
-      const resp = await contract.mintWithTokenURI(address,30,'https://gateway.pinata.cloud/ipfs/' + ipfsHash).send({
+      const resp = await contract.mintWithTokenURI(address,48,'https://gateway.pinata.cloud/ipfs/' + ipfsHash).send({
       from: address,
       shouldPollResponse:true
       });

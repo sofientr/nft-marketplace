@@ -62,7 +62,7 @@ const Solana = () => {
   const classes = useStyles();
 
 
-  let [cnxnStatus, setCnxnStatus] = useState(window.solana.isConnected ? "Disconnect" : "Connect");
+  let [cnxnStatus, setCnxnStatus] = useState(window.solana?.isConnected ? "Disconnect" : "Connect");
   let [solAction, setSolAction] = useState("Mint");
   let [smartContractAddress, setSmartContractAddress] = useState('');
   let [imageFile, setImageFile] = useState();
@@ -72,7 +72,7 @@ const Solana = () => {
 
   // const getProvider = () => {
   //   if ("solana" in window) {
-  //     const provider = window.solana;
+  //     const provider = window.solana?;
   //     if (provider.isPhantom) {
   //       return provider;
   //     }
@@ -81,17 +81,17 @@ const Solana = () => {
   // };
 
   const connectAction = async () => {
-    console.log(window.solana.isConnected);
+    console.log(window.solana?.isConnected);
 
-    if (!window.solana.isConnected) {
-      await window.solana.connect();
+    if (!window.solana?.isConnected) {
+      await window.solana?.connect();
       setCnxnStatus('Disconnect');
       console.log('connected');
 
 
     }
     else {
-      await window.solana.disconnect();
+      await window.solana?.disconnect();
       setCnxnStatus('Connect');
       setPubkey('deleted');
 
@@ -115,7 +115,7 @@ const Solana = () => {
 
 
     let data = {
-      'walletPK': window.solana.publicKey?.toString(),
+      'walletPK': window.solana?.publicKey?.toString(),
       // 'transaction' : signedTransaction ,
       // 'signature': signature
     };
@@ -136,7 +136,7 @@ const Solana = () => {
 
     transaction.add(
       web3.SystemProgram.createAccount({
-        fromPubkey: window.solana.publicKey,
+        fromPubkey: window.solana?.publicKey,
         newAccountPubkey: mintAccount.publicKey,
         lamports: balanceNeeded,
         space: splToken.MintLayout.span,
@@ -149,14 +149,14 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         0,
-        window.solana.publicKey,
-        window.solana.publicKey,
+        window.solana?.publicKey,
+        window.solana?.publicKey,
       ),
     );
 
 
 
-    transaction.feePayer = window.solana.publicKey;
+    transaction.feePayer = window.solana?.publicKey;
     transaction.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
@@ -165,7 +165,7 @@ const Solana = () => {
 
     transaction.sign(mintAccount);
     console.log('transaction', transaction);
-    const signedTransaction = await window.solana.signTransaction(transaction);
+    const signedTransaction = await window.solana?.signTransaction(transaction);
     const signature = await connection.sendRawTransaction(signedTransaction.serialize());
     console.log('signedTransaction', signedTransaction);
     console.log('signature', signature);
@@ -176,7 +176,7 @@ const Solana = () => {
       splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
       splToken.TOKEN_PROGRAM_ID,
       mintAccount.publicKey,
-      window.solana.publicKey
+      window.solana?.publicKey
     );
 
     transaction2.add(
@@ -185,8 +185,8 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
-        window.solana.publicKey
+        window.solana?.publicKey,
+        window.solana?.publicKey
 
       ));
 
@@ -201,18 +201,18 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
+        window.solana?.publicKey,
         [],
         1,
       )
     );
 
-    transaction2.feePayer = window.solana.publicKey;
+    transaction2.feePayer = window.solana?.publicKey;
     transaction2.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
 
-    const signedTransaction2 = await window.solana.signTransaction(transaction2);
+    const signedTransaction2 = await window.solana?.signTransaction(transaction2);
     const signature2 = await connection.sendRawTransaction(signedTransaction2.serialize());
     console.log('signedTransaction', signedTransaction2);
     console.log('signature', signature2);
@@ -237,14 +237,14 @@ const Solana = () => {
     
     
         // transaction.add(res.data.transaction.instructions[0])
-        transaction.feePayer = window.solana.publicKey;
+        transaction.feePayer = window.solana?.publicKey;
         transaction.recentBlockhash = (
           await connection.getRecentBlockhash()
         ).blockhash;
     
           console.log('transaction', transaction);
     
-          const signedTransaction = await window.solana.signTransaction(transaction);
+          const signedTransaction = await window.solana?.signTransaction(transaction);
           const signature = await connection.sendRawTransaction(signedTransaction.serialize());
           console.log('signedTransaction', signedTransaction);
           console.log('signature', signature);
@@ -266,7 +266,7 @@ const Solana = () => {
 
 
     let data = {
-      'walletPK': window.solana.publicKey?.toString(),
+      'walletPK': window.solana?.publicKey?.toString(),
       // 'transaction' : signedTransaction ,
       // 'signature': signature
     };
@@ -285,7 +285,7 @@ const Solana = () => {
 
     transaction.add(
       web3.SystemProgram.createAccount({
-        fromPubkey: window.solana.publicKey,
+        fromPubkey: window.solana?.publicKey,
         newAccountPubkey: mintAccount.publicKey,
         lamports: balanceNeeded,
         space: splToken.MintLayout.span,
@@ -298,14 +298,14 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         0,
-        window.solana.publicKey,
-        window.solana.publicKey,
+        window.solana?.publicKey,
+        window.solana?.publicKey,
       ),
     );
 
 
 
-    transaction.feePayer = window.solana.publicKey;
+    transaction.feePayer = window.solana?.publicKey;
     transaction.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
@@ -314,7 +314,7 @@ const Solana = () => {
 
     transaction.sign(mintAccount);
     console.log('transaction', transaction);
-    const signedTransaction = await window.solana.signTransaction(transaction);
+    const signedTransaction = await window.solana?.signTransaction(transaction);
     const signature = await connection.sendRawTransaction(signedTransaction.serialize());
     console.log('signedTransaction', signedTransaction);
     console.log('signature', signature);
@@ -325,7 +325,7 @@ const Solana = () => {
       splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
       splToken.TOKEN_PROGRAM_ID,
       mintAccount.publicKey,
-      window.solana.publicKey
+      window.solana?.publicKey
     );
 
     transaction2.add(
@@ -334,8 +334,8 @@ const Solana = () => {
         splToken.TOKEN_PROGRAM_ID,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
-        window.solana.publicKey
+        window.solana?.publicKey,
+        window.solana?.publicKey
 
       ));
 
@@ -350,18 +350,18 @@ const Solana = () => {
         myProgramId,
         mintAccount.publicKey,
         tokenAssocietedAccount,
-        window.solana.publicKey,
+        window.solana?.publicKey,
         [],
         1,
       )
     );
 
-    transaction2.feePayer = window.solana.publicKey;
+    transaction2.feePayer = window.solana?.publicKey;
     transaction2.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
 
-    const signedTransaction2 = await window.solana.signTransaction(transaction2);
+    const signedTransaction2 = await window.solana?.signTransaction(transaction2);
     const signature2 = await connection.sendRawTransaction(signedTransaction2.serialize());
     console.log('signedTransaction', signedTransaction2);
     console.log('signature', signature2);
@@ -386,14 +386,14 @@ const Solana = () => {
     
     
         // transaction.add(res.data.transaction.instructions[0])
-        transaction.feePayer = window.solana.publicKey;
+        transaction.feePayer = window.solana?.publicKey;
         transaction.recentBlockhash = (
           await connection.getRecentBlockhash()
         ).blockhash;
     
           console.log('transaction', transaction);
     
-          const signedTransaction = await window.solana.signTransaction(transaction);
+          const signedTransaction = await window.solana?.signTransaction(transaction);
           const signature = await connection.sendRawTransaction(signedTransaction.serialize());
           console.log('signedTransaction', signedTransaction);
           console.log('signature', signature);
@@ -414,11 +414,11 @@ const deployMyContract = () =>{
 
   useEffect(() => {
     setTimeout(() => {
-      setPubkey(window.solana.publicKey?.toString());
-      console.log(window.solana.publicKey?.toString());
+      setPubkey(window.solana?.publicKey?.toString());
+      console.log(window.solana?.publicKey?.toString());
 
     }, 10000)
-    setPubkey(window.solana.publicKey?.toString());
+    setPubkey(window.solana?.publicKey?.toString());
 
 
     // console.log('setPubkey',pubkey);
@@ -448,9 +448,9 @@ let changeSolAction = ()=>{
 
   // useEffect(() => {
 
-  //   setPubkey(window.solana.publicKey?.toString())
+  //   setPubkey(window.solana?.publicKey?.toString())
 
-  // }, [window.solana.isConnected]);
+  // }, [window.solana?.isConnected]);
 
 
   return (
@@ -467,7 +467,7 @@ let changeSolAction = ()=>{
       
 
 
-      {window.solana.publicKey && (
+      {window.solana?.publicKey && (
         <div>
 <div>
         <button onClick={() => { changeSolAction() }} >

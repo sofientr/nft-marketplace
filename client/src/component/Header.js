@@ -12,8 +12,10 @@ import {
 } from "reactstrap";
 import { withRouter } from "react-router-dom";
 import ConnectWallet from "./ConnectWallet";
+import Wallet from "./TronComponent/Wallet";
 
-const Header = ({ history, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
+
+const Header = ({ history, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId}) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
@@ -105,6 +107,10 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
           setContract_721={setContract_721}
           setSignerAddress={setSignerAddress}
           setNetworkId={setNetworkId}
+        />}</NavbarText>
+
+<NavbarText>          {isAuth() && isAuth().role === 0 && <Wallet
+        
         />}</NavbarText>
         {isAuth() && (
           <NavItem>
