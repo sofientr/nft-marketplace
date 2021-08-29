@@ -8,12 +8,15 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink, NavbarText
+  NavLink, NavbarText,
+  UncontrolledDropdown,DropdownMenu,DropdownItem,DropdownToggle
+
 } from "reactstrap";
 import { withRouter } from "react-router-dom";
 import ConnectWallet from "./ConnectWallet";
 import Wallet from "./TronComponent/Wallet";
 import { Button } from "@material-ui/core";
+
 
 
 
@@ -59,14 +62,14 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
               </NavItem>
             )}
 
-            {isAuth() && isAuth().role === 0 && (
+            {isAuth() && isAuth().role  === 0 && signerAddress && (
               <NavItem>
                 <Link to="/polygon">
                   <NavLink style={{ cursor: "pointer" }}>mint NFT on Polygon </NavLink>
                 </Link>
               </NavItem>
             )}
-            {isAuth() && isAuth().role === 0 && (
+            {isAuth() && isAuth().role === 0 && signerAddress && (
               <NavItem>
                 <Link to="/externalMint">
                   <NavLink style={{ cursor: "pointer" }}>external mint on Polygon </NavLink>
@@ -102,7 +105,17 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
           </Nav>
 
         </Collapse>
-        <NavbarText>          
+
+
+        
+
+        <UncontrolledDropdown  >
+              <DropdownToggle nav caret>
+                Wallet
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem>
+                <NavbarText>          
           {isAuth() && isAuth().role === 0 && 
           <ConnectWallet
           signerAddress={signerAddress}
@@ -114,11 +127,14 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
           setNetworkId={setNetworkId}
         />}</NavbarText>
 
-<NavbarText>          {isAuth() && isAuth().role === 0 && <Wallet
+                </DropdownItem>
+                <DropdownItem>
+                <NavbarText>          {isAuth() && isAuth().role === 0 && <Wallet
         
         />}</NavbarText>
-        
-     
+                </DropdownItem>
+                <DropdownItem>
+                       
 
         <NavbarText> 
           <Button variant="contained" color="primary"
@@ -146,6 +162,10 @@ const Header = ({ history, signerAddress, contract_1155, contract_721, setContra
           >{window.solana?.isConnected? 'Disconnect Phantom':'Connect Phantom'}</Button>         
         </NavbarText>
 
+                </DropdownItem>
+               
+              </DropdownMenu>
+            </UncontrolledDropdown>
 
         {isAuth() && (
           <NavItem>
