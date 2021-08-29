@@ -18,32 +18,32 @@ function App() {
   const [contract_721, setContract_721] = useState(null);
   const [signerAddress, setSignerAddress] = useState("");
   const [networkId, setNetworkId] = useState('')
+  const [solanaWalletPK, setSolanaWalletPK] = useState('')
   return (
     <div className="App">
       <Router>
-        <Header                  signerAddress={signerAddress}
+        <Header                  
+          signerAddress={signerAddress}
           contract_1155={contract_1155}
           contract_721={contract_721}
           setContract_1155={setContract_1155}
           setContract_721={setContract_721}
           setSignerAddress={setSignerAddress}
-          setNetworkId={setNetworkId} />
+          setNetworkId={setNetworkId} 
+          setSolanaWalletPK= {setSolanaWalletPK}/>
         <Protected />
         <Switch>
           <Route path="/signup" component={SignUP} exact />
           <Route path="/signin" component={Signin} exact />
           <Route path="/admin" component={HomeAdmin} exact />
-          <Route path="/solana" component={Solana} exact />
+          {/* <Route path="/solana" component={Solana} exact /> */}
           <Route path="/form" component={Form} exact />
           <Route path="/contract" component={Contract} exact />
-          {/* <Route path="/solana"  exact  >
+          <Route path="/solana"  exact  >
             <Solana
-            isMobile={isMobile}
-            contract_1155={contract_1155}
-            contract_721={contract_721}
-            networkId={networkId} 
+            solanaWalletPK={solanaWalletPK}
             />
-          </Route> */}
+          </Route>
           <Route path="/polygon" exact   >
             <Mint         
           isMobile={isMobile}

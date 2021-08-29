@@ -2,7 +2,7 @@ import axios from 'axios'
 import * as web3 from "@solana/web3.js"
 
 
-const url = 'http://localhost:8001';
+const url = 'http://localhost:8005';
 const API = axios.create();
 
 // products
