@@ -486,11 +486,7 @@ const Solana = (solanaWalletPK: string) => {
       setPubkey(window.solana?.publicKey?.toString());
       console.log(window.solana?.publicKey?.toString());
 
-<<<<<<< HEAD
-    }, 10000)
-=======
     }, 5000)
->>>>>>> 9016b1a2846a298d3021e2d09787fd0ba86c373d
     setPubkey(window.solana?.publicKey?.toString());
 
 

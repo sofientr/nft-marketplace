@@ -13,10 +13,9 @@ import {
 import { withRouter } from "react-router-dom";
 import ConnectWallet from "./ConnectWallet";
 import Wallet from "./TronComponent/Wallet";
-
-
-const Header = ({ history, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId}) => {
 import { Button } from "@material-ui/core";
+
+
 
 const Header = ({ history, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId,setSolanaWalletPK }) => {
   const [isOpen, setIsOpen] = useState(false);
