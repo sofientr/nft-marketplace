@@ -21,7 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 toast.configure();
 
 const ContractComponent = (
-  { signerAddress, setTrsHash, setErr, networkId, setOpen ,external ,setDeployedContract,setTriggerModal }) => {
+  { signerAddress, setTrsHash, setErr, networkId, setOpen ,external ,setDeployedContract,setTriggerModal ,setAddressContract,setErrContract}) => {
   const classes = useStyles();
 
   // hooks
@@ -41,7 +41,34 @@ const ContractComponent = (
     file: "",
   })
  
+  const onClick = async(e) => {
+    e.preventDefault();
+    const tronWeb = window.tronWeb
+    const {
+    abi,
+    bytecode
+    } = await tronWeb.trx.getContract("TX2HV8qf2B2RByXbnie24iTW5w5T2matFp");
+    console.log("gegge",abi)
+        try{
+      const transaction = await tronWeb.transactionBuilder.createSmartContract({ abi, bytecode,feeLimit:1000000000,
+        callValue:0,
+        userFeePercentage:1,
+        originEnergyLimit:10000000
+      });
+    
+    const signedTransaction = await tronWeb.trx.sign(transaction);
+    const contract_instance= await tronWeb.trx.sendRawTransaction(signedTransaction);
+    const addressInHexFormat = contract_instance.transaction.contract_address;
+    const addressInBase58 = tronWeb.address.fromHex(addressInHexFormat);
+    console.log(addressInBase58);
+    setAddressContract(addressInBase58);
+}
+catch(error){
+  setErrContract("Error : Transaction Failed")
+  alert("Error : Transaction Failed")
 
+}
+}
   
   // validate form
   const validateName = () => {
@@ -65,6 +92,8 @@ const ContractComponent = (
       setErrors(pS => ({ ...pS, address: '' }))
     }
   }
+
+
   // handle file upload
   const handleFile = async (e) => {
     setFile(e.target.files[0]);
@@ -76,6 +105,10 @@ const ContractComponent = (
       reader.readAsDataURL(e.target.files[0]);
     }
   }
+
+
+
+  
   const onSubmit = async (e) => {
    
     e.preventDefault();
@@ -142,11 +175,12 @@ const ContractComponent = (
      
   };
 
+
+  
   return (
     <>
        
       {<h2>Mint Your NFT With TRON</h2>}
-
 
 
     <form className={classes.root} noValidate autoComplete="off" onSubmit={onSubmit}>
@@ -246,6 +280,7 @@ const ContractComponent = (
                   </Button>
       
     </form>
+    <Button type="submit" className={classes.submit} onClick={onClick}>deploy contract</Button>
     </>
   );
 }

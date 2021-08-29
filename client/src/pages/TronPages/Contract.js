@@ -27,6 +27,8 @@ const Contract = () => {
   const [err, setErr] = useState('')
   const [open, setOpen] = React.useState(false);
   const [triggerModal, setTriggerModal] = useState(false);
+  const[addressContract,setAddressContract]=useState('');
+  const[errContract,setErrContract]=useState('');
 
   useEffect(() => {
     console.log("inEffect")
@@ -62,8 +64,24 @@ return (
       </a>
       </Typography>
     }
+     {
+       addressContract &&<Typography variant="h6" style={{marginBottom:'-50px',border: '1px solid #37af3b',height: '100px'}}>
+         &#9989; Samart Contract deployed {addressContract} 
+        <a style={{ color: '#ee6f57'}}
+          rel="noopener noreferrer"
+          target="_blank"
+          href={`https://shasta.tronscan.org/#/contract/TX2HV8qf2B2RByXbnie24iTW5w5T2matFp/transactions`}>
+      </a>
+      </Typography>
+    }
     {
        err &&<Typography variant="h6" style={{marginBottom:'-50px',border: '1px solid red',height: '100px',color: 'tomato' }}>
+         &#9940; &#9940; Error: {'  ⚠️ '} {err}
+      </Typography>
+    }
+
+{
+       errContract &&<Typography variant="h6" style={{marginBottom:'-50px',border: '1px solid red',height: '100px',color: 'tomato' }}>
          &#9940; &#9940; Error: {'  ⚠️ '} {err}
       </Typography>
     }
@@ -78,6 +96,8 @@ return (
             setErr={setErr}
             setOpen={setOpen}
             setTriggerModal={setTriggerModal}
+            setAddressContract={setAddressContract}
+            setErrContract={setErrContract}
 
             />
         }
